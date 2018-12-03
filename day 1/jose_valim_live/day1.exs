@@ -35,7 +35,7 @@ case System.argv() do
   [input_file] ->
     input_file
     |> File.read!()
-    |> Day.final_frequency()
+    |> Day1.final_frequency()
     |> IO.puts
 
   _ ->
