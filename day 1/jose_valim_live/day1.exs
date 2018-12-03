@@ -14,19 +14,31 @@ defmodule Day1 do
     current_frequency
   end
 end
+case System.argv() do
+  ["--test"] ->
+    ExUnit.start()
 
-ExUnit.start()
+    defmodule Day1Test do
+      use ExUnit.Case
 
-defmodule Day1Test do
-  use ExUnit.Case
+      import Day1
 
-  import Day1
+      test "final frequency" do
+        assert final_frequency("""
+          +1
+          +1
+          +1
+          """) == 3
+      end
+    end
 
-  test "final frequency" do
-    assert final_frequency("""
-      +1
-      +1
-      +1
-      """) == 3
-  end
+  [input_file] ->
+    input_file
+    |> File.read!()
+    |> Day.final_frequency()
+    |> IO.puts
+
+  _ ->
+    IO.puts :stderr, "we expected --test or an input file"
+    System.halt(1)
 end
