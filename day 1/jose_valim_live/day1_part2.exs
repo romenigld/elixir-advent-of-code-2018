@@ -1,25 +1,27 @@
 defmodule Day1 do
   def repeated_frequency(file_stream) do
-    Process.put({__MODULE__, 0}, true)
+    Task.async(fn ->
+      Process.put({__MODULE__, 0}, true)
 
-    file_stream
-    |> Stream.map(fn line ->
-      {integer, _leftover} = Integer.parse(line)
-      integer
-    end)
-    |> Stream.cycle()
-    # |> Stream.map(&IO.inspect/1)
-    |> Enum.reduce_while(0, fn x, current_frequency ->
-      new_frequency = current_frequency + x
-      key = {__MODULE__, new_frequency}
+      file_stream
+      |> Stream.map(fn line ->
+        {integer, _leftover} = Integer.parse(line)
+        integer
+      end)
+      |> Stream.cycle()
+      # |> Stream.map(&IO.inspect/1)
+      |> Enum.reduce_while(0, fn x, current_frequency ->
+        new_frequency = current_frequency + x
+        key = {__MODULE__, new_frequency}
 
-      if Process.get(key) do
-        {:halt, new_frequency}
-      else
-        Process.put({__MODULE__, new_frequency}, true)
-        {:cont, new_frequency}
-      end
-    end)
+        if Process.get(key) do
+          {:halt, new_frequency}
+        else
+          Process.put({__MODULE__, new_frequency}, true)
+          {:cont, new_frequency}
+        end
+      end)
+    end) |> Task.await(:infinity)
   end
 end
 
