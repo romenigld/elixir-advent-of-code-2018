@@ -1,5 +1,7 @@
 defmodule Day1 do
   def repeated_frequency(file_stream) do
+    Process.put({__MODULE__, 0}, true)
+
     file_stream
     |> Stream.map(fn line ->
       {integer, _leftover} = Integer.parse(line)
@@ -7,13 +9,15 @@ defmodule Day1 do
     end)
     |> Stream.cycle()
     # |> Stream.map(&IO.inspect/1)
-    |> Enum.reduce_while({0, MapSet.new([0])}, fn x, {current_frequency, seen_frequencies} ->
+    |> Enum.reduce_while(0, fn x, current_frequency ->
       new_frequency = current_frequency + x
+      key = {__MODULE__, new_frequency}
 
-      if new_frequency in seen_frequencies do
+      if Process.get(key) do
         {:halt, new_frequency}
       else
-        {:cont, {new_frequency, MapSet.put(seen_frequencies, new_frequency)}}
+        Process.put({__MODULE__, new_frequency}, true)
+        {:cont, new_frequency}
       end
     end)
   end
