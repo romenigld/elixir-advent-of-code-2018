@@ -3,7 +3,6 @@ defmodule Day1 do
     file_stream
     |> Stream.map(fn line ->
       {integer, _leftover} = Integer.parse(line)
-      IO.inspect _leftover
       integer
     end)
     |> Enum.sum()
