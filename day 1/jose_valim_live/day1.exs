@@ -1,7 +1,11 @@
 defmodule Day1 do
   def final_frequency(file_stream) do
     file_stream
-    |> Stream.map(fn line -> line |> String.trim |> String.to_integer() end)
+    |> Stream.map(fn line ->
+      {integer, _leftover} = Integer.parse(line)
+      IO.inspect _leftover
+      integer
+    end)
     |> Enum.sum()
   end
 end
