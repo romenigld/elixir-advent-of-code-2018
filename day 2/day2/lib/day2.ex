@@ -4,8 +4,8 @@ defmodule Day2 do
     count_characters(string, %{})
   end
 
-  defp count_characters(<<byte, rest::binary>>, acc) do
-    acc = Map.update(acc, byte, 1, &(&1 +1))
+  defp count_characters(<<codepoint::utf8, rest::binary>>, acc) do
+    acc = Map.update(acc, codepoint, 1, &(&1 +1))
     count_characters(rest, acc)
   end
 

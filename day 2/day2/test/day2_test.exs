@@ -4,10 +4,10 @@ defmodule Day2Test do
   doctest Day2
 
   test "count characters" do
-    assert Day2.count_characters("aabbcc") == %{
+    assert Day2.count_characters("éaabbé") == %{
       ?a => 2,
       ?b => 2,
-      ?c => 2
+      ?é => 2
     }
   end
 end
