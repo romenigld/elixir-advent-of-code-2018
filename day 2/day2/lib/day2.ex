@@ -1,4 +1,30 @@
 defmodule Day2 do
+
+  def closest(list) when is_list(list) do
+    list
+    |> Enum.map(&String.to_charlist/1)
+    |> closest_charlists()
+  end
+
+  def closest_charlists([head | tail]) do
+    if closest = Enum.find(tail, &one_char_difference?(&1, head)) do
+      head
+      |> Enum.zip(closest)
+      |> Enum.filter(fn {cp1, cp2} -> cp1 == cp2 end)
+      |> Enum.map(fn {cp, _} -> cp end)
+      |> List.to_string()
+    else
+      closest_charlists(tail)
+    end
+  end
+
+  defp one_char_difference?(charlist1, charlist2) do
+    charlist1
+    |> Enum.zip(charlist2)
+    |> Enum.count(fn {cp1, cp2} -> cp1 != cp2 end)
+    |> Kernel.==(1)
+  end
+
   def checksum(list) when is_list(list) do
     {twices, thrices} =
       Enum.reduce(list, {0, 0}, fn box_id, {total_twice, total_thrice} ->
