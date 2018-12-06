@@ -1,15 +1,10 @@
 defmodule Day2 do
   def checksum(list) when is_list(list) do
     {twices, thrices} =
-    list
-    |> Enum.map(fn box_id ->
-      box_id
-      |> count_characters()
-      |> get_twice_and_thrice()
-    end)
-    |> Enum.reduce({0, 0}, fn {twice, thrice}, {total_twice, total_thrice} ->
-      {twice + total_twice, thrice + total_thrice}
-    end)
+      Enum.reduce(list, {0, 0}, fn box_id, {total_twice, total_thrice} ->
+        {twice, thrice} = box_id |> count_characters() |> get_twice_and_thrice()
+        {twice + total_twice, thrice + total_thrice}
+      end)
 
     twices * thrices
   end
