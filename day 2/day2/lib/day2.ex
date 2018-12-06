@@ -15,9 +15,11 @@ defmodule Day2 do
   end
 
   def get_twice_and_thrice(characters) when is_map(characters) do
-    twice = Enum.count(characters, fn {_codepoint, count} -> count == 2 end)
-    thrice = Enum.count(characters, &match?({_codepoint, 3}, &1))
-    {min(twice, 1), min(thrice, 1)}
+    Enum.reduce(characters, {0, 0}, fn
+      {_codepoint, 2}, {_twice, thrice} -> {1, thrice}
+      {_codepoint, 3}, {twice, _thrice} -> {twice, 1}
+      _, acc -> acc
+    end)
   end
 
   def count_characters(string) when is_binary(string) do
