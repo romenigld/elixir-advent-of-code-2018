@@ -32,6 +32,8 @@ defmodule Day3 do
     ...>])
     iex> claimed[{4, 2}]
     [2]
+    iex> claimed[{4, 4}]
+    [2, 1]
   """
   @spec claimed_inches([claim]) :: %{coordinate => [id]}
   def claimed_inches(claims) do
