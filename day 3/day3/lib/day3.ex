@@ -62,8 +62,6 @@ defmodule Day3 do
   """
   @spec overlapped_inches([claim]) :: [coordinate]
   def overlapped_inches(claims) do
-    for {coordinate, [_, _ |_]} <- claimed_inches(claims)do
-      coordinate
-    end
+    for {coordinate, [_, _ |_]} <- claimed_inches(claims), do: coordinate
   end
 end
