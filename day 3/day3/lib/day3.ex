@@ -70,7 +70,7 @@ defmodule Day3 do
 
   ## Examples
 
-    iex> claimed = Day3.non_overlapping_claim([
+    iex> Day3.non_overlapping_claim([
     ...>  "#1 @ 1,3: 4x4",
     ...>  "#2 @ 3,1: 4x4",
     ...>  "#3 @ 5,5: 2x2",
@@ -78,25 +78,34 @@ defmodule Day3 do
     3
   """
   def non_overlapping_claim(claims) do
-    parsed_claims = Enum.map(claims, &parse_claim/1)
+    overlapping_ids = MapSet.new(1..length(claims))
 
-    overlapped_claims =
-      Enum.reduce(parsed_claims, %{}, fn [id, left, top, width, height], acc ->
+    {_inches, overlapping_ids} =
+      Enum.reduce(claims, {%{}, overlapping_ids}, fn claim, acc ->
+        [id, left, top, width, height] = parse_claim(claim)
+
         Enum.reduce((left + 1)..(left + width), acc, fn x, acc ->
-          Enum.reduce((top + 1)..(top + height), acc, fn y, acc ->
-            Map.update(acc, {x, y}, [id], &[id | &1])
+          Enum.reduce((top + 1)..(top + height), acc, fn y, {inches, overlapping_ids} ->
+            coordinate = {x, y}
+
+            overlapping_ids =
+              case inches do
+                %{^coordinate => [unique_id]} ->
+                  overlapping_ids |> MapSet.delete(unique_id) |> MapSet.delete(id)
+
+                %{^coordinate => _} ->
+                  overlapping_ids |> MapSet.delete(id)
+
+                %{} ->
+                  overlapping_ids
+              end
+
+            {Map.update(inches, coordinate, [id], &[id | &1]), overlapping_ids}
           end)
         end)
       end)
 
-    [id, _, _, _, _] =
-      Enum.find(parsed_claims, fn [id, left, top, width, height] ->
-        Enum.all?((left + 1)..(left + width), fn x ->
-          Enum.all?((top + 1)..(top + height), fn y ->
-            Map.get(overlapped_claims, {x, y}) == [id]
-          end)
-        end)
-      end)
+    [id] = MapSet.to_list(overlapping_ids)
     id
   end
 end
